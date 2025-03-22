@@ -1,6 +1,6 @@
 # 🧱 WordPress Headless + Astro Skeleton
 
-This repository provides a ready-to-use Dockerized skeleton for projects that combine a **WordPress headless CMS** backend with an **Astro** frontend.  
+This repository provides a ready-to-use Dockerized skeleton for projects that combine a **WordPress headless CMS** backend with an **Astro** frontend.
 Ideal for portfolios, blogs, landing pages, or any content-driven site powered by a decoupled architecture.
 
 ---
@@ -9,7 +9,7 @@ Ideal for portfolios, blogs, landing pages, or any content-driven site powered b
 
 | Component     | Version    | Description                                 |
 |---------------|------------|---------------------------------------------|
-| WordPress     | latest     | Headless CMS via REST API                   |
+| WordPress     | latest     | Installed via Docker image                  |
 | MySQL         | 5.7        | Database for WordPress                      |
 | phpMyAdmin    | latest     | DB management interface (dev only)          |
 | Astro         | 5.5.4      | Frontend framework for static/dynamic sites |
@@ -52,34 +52,65 @@ Ideal for portfolios, blogs, landing pages, or any content-driven site powered b
 
 ```
 .
-├── astro-frontend/     # Astro app (frontend)
-├── wp/                 # WordPress content & DB volumes
-├── docker-compose.yml  # Docker orchestration
-├── Makefile            # Helper commands
+├── astro-frontend/               # Astro app (frontend)
+├── wp/
+│   └── html/
+│       └── wp-content/           # Versioned themes and plugins only
+│           ├── themes/
+│           └── plugins/
+├── docker-compose.yml            # Docker orchestration
+├── Makefile                      # Helper commands
 └── README.md
 ```
-> ℹ️ The `wp/html` and `wp/mysql` folders are used as Docker volumes and are created automatically on first run. They are intentionally empty in the repo (using `.gitkeep`) and should not be modified manually.
 
 ---
 
 ## 💠 Makefile Commands
 
-| Command        | Description                         |
-|----------------|-------------------------------------|
-| `make up`      | Start all containers                |
-| `make down`    | Stop all containers                 |
-| `make logs`    | Show real-time logs                 |
-| `make restart` | Restart containers                  |
-| `make wp-shell`| Enter WordPress container shell     |
-| `make astro-shell` | Enter Astro container shell     |
+| Command            | Description                                           |
+|--------------------|-------------------------------------------------------|
+| `make up`          | Start all containers                                  |
+| `make down`        | Stop all containers                                   |
+| `make logs`        | Show real-time logs                                   |
+| `make restart`     | Restart containers                                    |
+| `make wp-shell`    | Enter WordPress container shell                       |
+| `make astro-shell` | Enter Astro container shell                           |
 
 ---
 
-## 📁 Notes
+## 📁 Notes & Conventions
 
-- The Astro dev server is configured with `--host` so it’s accessible from the host and local network.
-- `node_modules` for Astro is installed inside the container and managed via a mounted volume, ensuring platform compatibility (Linux vs macOS).
-- `phpMyAdmin` is for dev/debug only and should be removed in production environments.
+- This project uses the **WordPress Docker image**. WordPress core is not tracked in Git.
+- Only `wp-content/` (themes, plugins) is versioned. This allows full customization and portability.
+- Database contents are stored in Docker volumes and **not versioned**.
+- Astro's dev server is exposed via `--host` and available on your local network.
+
+---
+
+## 🔄 Reset / Troubleshooting
+
+If you experience errors with WordPress or the database, it's likely due to leftover Docker volumes.
+You can reset the entire environment with:
+
+```bash
+docker-compose down -v --remove-orphans
+rm -rf wp/html wp/mysql
+mkdir -p wp/html/wp-content/themes wp/html/wp-content/plugins
+make up
+```
+
+---
+
+## 🔄 Folder Strategy
+
+| Folder                         | Tracked? | Purpose                                               |
+|-------------------------------|----------|-------------------------------------------------------|
+| `wp/html/wp-content/`         | ✅ Yes   | Your themes and plugins go here                      |
+| `wp/html/wp-admin/`, etc.     | ❌ No    | WordPress core from the Docker image                 |
+| `wp/mysql/`                   | ❌ No    | MySQL data directory (Docker volume)                 |
+
+> WordPress is mounted via Docker and auto-installs on first run.
+> You can customize `wp-content/` fully to control themes/plugins.
 
 ---
 
@@ -90,6 +121,7 @@ This skeleton is a base — feel free to:
 - Add custom post types (CPT) and ACF fields in WordPress.
 - Fetch content from the WordPress REST API into Astro.
 - Build your custom pages, routes, and components in Astro.
+- Develop your own theme inside `wp-content/themes/`
 
 ---
 
@@ -97,13 +129,14 @@ This skeleton is a base — feel free to:
 
 ```bash
 docker-compose down -v --remove-orphans
-docker-compose build --no-cache
+rm -rf wp/html wp/mysql
+mkdir -p wp/html/wp-content/themes wp/html/wp-content/plugins
 make up
 ```
 
 ---
 
-## 📝 License
+## 📍 License
 
 MIT — free to use and adapt.
 

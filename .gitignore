@@ -3,8 +3,17 @@ astro/node_modules/
 astro/dist/
 
 # WordPress mounts
-wp/html/
+wp/html/wp-admin/
+wp/html/wp-includes/
+wp/html/index.php
+wp/html/license.txt
+wp/html/readme.html
+wp/html/wp-*.php
+wp/html/.htaccess
+
+# DB
 wp/mysql/
+
 
 # Docker
 **/.dockerignore

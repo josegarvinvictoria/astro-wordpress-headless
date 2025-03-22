@@ -1,0 +1,16 @@
+# Node
+astro/node_modules/
+astro/dist/
+
+# WordPress mounts
+wp/html/
+wp/mysql/
+
+# Docker
+**/.dockerignore
+
+# Astro cache
+astro/.astro/
+
+# VSCode
+astro/.vscode/

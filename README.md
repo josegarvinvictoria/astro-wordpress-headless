@@ -58,6 +58,7 @@ Ideal for portfolios, blogs, landing pages, or any content-driven site powered b
 ├── Makefile            # Helper commands
 └── README.md
 ```
+> ℹ️ The `wp/html` and `wp/mysql` folders are used as Docker volumes and are created automatically on first run. They are intentionally empty in the repo (using `.gitkeep`) and should not be modified manually.
 
 ---
 
